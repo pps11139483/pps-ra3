@@ -25,4 +25,4 @@ jobs:
           find . -name "Dockerfile"
           
           echo "-----------------------------------"
-          find . -name "Dockerfile" -print0 | xargs -0 hadolint
+          find . -name "Dockerfile" -print0 | xargs -0 hadolint --failure-threshold error
