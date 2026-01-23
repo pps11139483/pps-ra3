@@ -1,0 +1,28 @@
+name: CI - Docker Lint
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Instalar Hadolint
+        run: |
+          wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+
+      - name: Buscar y Lintar Dockerfiles
+        run: |
+          # Busca todos los archivos llamados "Dockerfile" y ejecuta hadolint sobre ellos
+          echo "Analizando los siguientes Dockerfiles:"
+          find . -name "Dockerfile"
+          
+          echo "-----------------------------------"
+          find . -name "Dockerfile" -print0 | xargs -0 hadolint
