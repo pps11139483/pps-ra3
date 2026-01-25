@@ -87,7 +87,33 @@ ENV APACHE_RUN_GROUP apache
 RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/lock/apache2
 ```
 
-> **Nota:** algunas de las tareas listadas en la página ya fueron listadas anteriormente, como la ocultación de la versión de Apache, la adición de cabeceras de seguridad, la configuración del WAF con las reglas CSR o el uso de SSL.
+### Tabla resumen
+
+| Tarea | Implementación |
+| --- | --- |
+| Remove Server Version Banner | Implementado en Tarea 1.1 |
+| Disable directory browser listing | x |
+| Etag | x |
+| Run Apache from a non-privileged account | x |
+| Protect binary and configuration directory permissions | x |
+| System Settings Protection | x |
+| HTTP Request Methods | x |
+| Disable Trace HTTP Request | x |
+| Set cookie with HttpOnly and Secure flag | x |
+| Clickjacking Attack | x |
+| Server Side Include | x |
+| X-XSS Protection | x |
+| Disable HTTP 1.0 Protocol | x |
+| Timeout value configuration | x |
+| SSL Key | Implementado en Tarea 2 |
+| SSL Cipher | x |
+| Disable SSL v2 & v3 | x |
+| ModSecurity | Implementado en Tareas 1.2 y 1.3 |
+| ModSecurity Logging | x |
+| Change Server Banner | x |
+| Configure Listen Port | x |
+| Access Logging | x |
+| Disable Loading unwanted modules | x |
 
 ## Pull
 
