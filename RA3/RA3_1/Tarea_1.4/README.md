@@ -109,7 +109,7 @@ dos-172.17.0.1
 
 > Ejecución de `ab`.
 ![Prueba 1](capturas/prueba1.png)
-[**Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
+[> **Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
 
 > Registros de bloqueo de apache.
 ![Prueba 2](capturas/prueba2.png)

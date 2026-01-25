@@ -165,11 +165,11 @@ ab -n 1000 -c 20 https://localhost:8443/
 ![Prueba 4](capturas/prueba4.png)
 
 > Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.
-![Prueba 15](capturas/prueba5.png)
+![Prueba 5](capturas/prueba5.png)
 
 > Ejecución de `ab`.
 ![Prueba 6](capturas/prueba6.png)
-[**Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
+[> **Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
 
 > Prueba de navegación por el sitio HTTPS.
 ![Prueba 7](capturas/prueba7.png)

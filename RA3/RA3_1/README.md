@@ -17,7 +17,7 @@ A continuación se detallan las tareas realizadas junto con un enlace a su desar
 *   **[Tarea 2: Instalar un certificado digital en Apache](./Tarea_2/README.md)**: Configuración de certificados propios y redirección forzosa de HTTP a HTTPS.
 
 ### Práctica 3: Apache Hardening Best Practices
-*   **[Tarea 3: Securizar el servidor Apache](./Tarea_3/Dockerfile)**: Configuración avanzada para limitar los verbos HTTP permitidos (GET, POST) y minimizar la superficie de exposición.
+*   **[Tarea 3: Securizar el servidor Apache](./Tarea_3/README.md)**: Configuración avanzada para limitar los verbos HTTP permitidos (GET, POST) y minimizar la superficie de exposición.
 
 ## Estructura del Proyecto
 
