@@ -75,15 +75,16 @@ Obtener un estado `200 OK` y la presencia de las cabeceras `Strict-Transport-Sec
 
 ```http
 HTTP/1.1 200 OK
-Date: Thu, 22 Jan 2026 21:35:00 GMT
 Server: Apache
+...
 Strict-Transport-Security: max-age=63072000; includeSubDomains
 Content-Security-Policy: default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'
-Content-Type: text/html
 ```
 
 ## Capturas
 
+> Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.
+![Prueba 1](capturas/prueba1.png)
 
 
 ## Fuentes
