@@ -35,6 +35,14 @@ jobs:
           - context: ./RA3/RA3_1/Tarea_1.4
             image_tag: ra3_1-tarea-1.4
 
+          # Tarea 1.5
+          - context: ./RA3/RA3_1/Tarea_1.5
+            image_tag: ra3_1-tarea-1.5
+
+          # Tarea 2
+          - context: ./RA3/RA3_1/Tarea_2
+            image_tag: ra3_1-tarea-2
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
