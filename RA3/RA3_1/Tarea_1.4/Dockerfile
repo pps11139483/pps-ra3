@@ -11,10 +11,10 @@ RUN apt-get update && \
 RUN mkdir -p /var/log/mod_evasive && \
     chown -R www-data:www-data /var/log/mod_evasive
 
-# Sobrescribimos la configuración por defecto para que salte enseguida (umbral bajo)
+# Sobrescribimos la configuración por defecto
 COPY evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Habilitar el módulo (normalmente se habilita al instalar, pero aseguramos)
+# Habilitar el módulo
 RUN a2enmod evasive
 
 # CMD y EXPOSE se heredan
