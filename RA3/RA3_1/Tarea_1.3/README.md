@@ -60,7 +60,7 @@ docker pull pps11139483/pps-ra3:ra3_1-tarea-1.3
 ## Ejecución
 
 ```bash
-docker run -p 8080:80 -p 8443:443 pps11139483/pps-ra3:ra3_1-tarea-1.3
+docker run --name tarea1.3 -p 8080:80 -p 8443:443 pps11139483/pps-ra3:ra3_1-tarea-1.3
 ```
 
 ## Pruebas y validación
@@ -156,7 +156,7 @@ Log de error.
 
 > Conexión **rechazada** con código de error `403` por bloqueo de inyección de comandos en POST.
 ![Prueba 4](capturas/prueba4.png)
-Log de error. n 
+Log de error.
 ![Log de prueba 4](capturas/prueba4_log.png)
 
 ## Fuentes

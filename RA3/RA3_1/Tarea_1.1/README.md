@@ -57,7 +57,7 @@ docker pull pps11139483/pps-ra3:ra3_1-tarea-1.1
 ## Ejecución
 
 ```bash
-docker run -p 8080:80 -p 8443:443 pps11139483/pps-ra3:ra3_1-tarea-1.1
+docker run --name tarea1.1 -p 8080:80 -p 8443:443 pps11139483/pps-ra3:ra3_1-tarea-1.1
 ```
 
 ## Pruebas y validación
