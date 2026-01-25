@@ -62,3 +62,15 @@ ENV APACHE_RUN_GROUP apache
 RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/lock/apache2
 
 # Los puertos y el arranque se heredan de la imagen anterior
+
+# TAREA 3.1: Deshabilitar módulos no deseados (WebDAV e Info)
+RUN a2dismod -f autoindex dav dav_fs info
+
+# TAREA 3.2: Configurar Access Logging (Tiempo de respuesta y SessionID)
+# Modificamos el formato 'common' para incluir %T (tiempo) y %{sessionID}C (cookie de sesión)
+RUN sed -i 's/LogFormat .* common/LogFormat "%h %l %u %t \\"%{sessionID}C\\" \\"%r\\" %>s %b %T" common/' /etc/apache2/apache2.conf
+
+# TAREA 3.3: Configurar ModSecurity Audit Log
+# Activamos el motor de auditoría y definimos la ruta del log
+RUN echo "SecAuditEngine On" >> /etc/apache2/modsecurity/modsecurity.conf && \
+    echo "SecAuditLog /var/log/apache2/modsec_audit.log" >> /etc/apache2/modsecurity/modsecurity.conf

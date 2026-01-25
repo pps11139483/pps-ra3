@@ -87,33 +87,51 @@ ENV APACHE_RUN_GROUP apache
 RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/lock/apache2
 ```
 
+Siguiendo las mejores prácticas, se han deshabilitado módulos innecesarios como **WebDAV** (`mod_dav`, `mod_dav_fs`) y **mod_info**, que podrían ser vectores de ataque o fuga de información. Además, se ha personalizado el formato de los logs de acceso (`LogFormat`) para incluir el tiempo de respuesta (`%T`) y el ID de sesión (`%{sessionID}C`), mejorando la capacidad de auditoría y depuración.
+
+```dockerfile
+RUN a2dismod -f autoindex dav dav_fs info
+RUN sed -i 's/LogFormat .* common/LogFormat "%h %l %u %t \\"%{sessionID}C\\" \\"%r\\" %>s %b %T" common/' /etc/apache2/apache2.conf
+```
+
+Se ha habilitado el **Audit Log** de ModSecurity para registrar transacciones marcadas por las reglas. Esto se configura activando `SecAuditEngine` y definiendo la ruta del log con `SecAuditLog`.
+
+```dockerfile
+RUN echo "SecAuditEngine On" >> /etc/apache2/modsecurity/modsecurity.conf && \
+    echo "SecAuditLog /var/log/apache2/modsec_audit.log" >> /etc/apache2/modsecurity/modsecurity.conf
+```
+
+### Justificación: Configure Listen
+
+La recomendación de configurar la directiva `Listen` con una IP absoluta (ej. `Listen 10.10.10.1:80`) **no se ha implementado** directamente en el archivo de configuración de Apache. En un entorno Docker, la gestión de IPs de escucha se delega al runtime de Docker. "Quemamos" una IP específica en la imagen haría que el contenedor fuera menos portable. La restricción de acceso por IP debe realizarse al ejecutar el contenedor (ej. `docker run -p 127.0.0.1:8080:80 ...`) o mediante firewalls externos.
+
 ### Tabla resumen
 
 | Tarea | Implementación |
 | --- | --- |
 | Remove Server Version Banner | Implementado en Tarea 1.1 |
-| Disable directory browser listing | x |
-| Etag | x |
-| Run Apache from a non-privileged account | x |
-| Protect binary and configuration directory permissions | x |
-| System Settings Protection | x |
-| HTTP Request Methods | x |
-| Disable Trace HTTP Request | x |
-| Set cookie with HttpOnly and Secure flag | x |
-| Clickjacking Attack | x |
-| Server Side Include | x |
-| X-XSS Protection | x |
-| Disable HTTP 1.0 Protocol | x |
-| Timeout value configuration | x |
+| Disable directory browser listing | Dockerfile, línea 8 |
+| Etag | Dockerfile, línea 12 |
+| Run Apache from a non-privileged account | Dockerfile, líneas 57 a 59 |
+| Protect binary and configuration directory permissions | Dockerfile, línea 53 |
+| System Settings Protection | Dockerfile, línea 8 |
+| HTTP Request Methods | limit-methods.conf |
+| Disable Trace HTTP Request | Dockerfile, línea 20 |
+| Set cookie with HttpOnly and Secure flag | Dockerfile, línea 28 |
+| Clickjacking Attack | Dockerfile, línea 26 |
+| Server Side Include | Dockerfie, línea 9 |
+| X-XSS Protection | Dockerfile, línea 27 |
+| Disable HTTP 1.0 Protocol | block-http10.conf |
+| Timeout value configuration | Dockerfile, línea 32 |
 | SSL Key | Implementado en Tarea 2 |
-| SSL Cipher | x |
-| Disable SSL v2 & v3 | x |
+| SSL Cipher | Dockerfile, línea 36 |
+| Disable SSL v2 & v3 | Dockerfile, línea 37 |
 | ModSecurity | Implementado en Tareas 1.2 y 1.3 |
-| ModSecurity Logging | x |
-| Change Server Banner | x |
-| Configure Listen Port | x |
-| Access Logging | x |
-| Disable Loading unwanted modules | x |
+| ModSecurity Logging | Dockerfile, líneas 75 a 76 |
+| Change Server Banner | Dockerfile, líneas 41 a 43 |
+| Configure Listen Port | No aplica en Docker |
+| Access Logging | Dockerfile, línea 71 |
+| Disable Loading unwanted modules | Dockerfile, línea 67 |
 
 ## Pull
 
