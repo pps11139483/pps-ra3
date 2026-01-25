@@ -1,0 +1,118 @@
+CONNECTED(00000003)
+---
+Certificate chain
+ 0 s:C=ES, ST=Castellon, L=Castellon de la Plana, O=Caminas Web Projects, OU=Departammento de Informatica, CN=www.midominioseguro.com
+   i:C=ES, ST=Castellon, L=Castellon de la Plana, O=Caminas Web Projects, OU=Departammento de Informatica, CN=www.midominioseguro.com
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Jan 25 14:31:14 2026 GMT; NotAfter: Jan 25 14:31:14 2027 GMT
+-----BEGIN CERTIFICATE-----
+MIIENTCCAx2gAwIBAgIUPx791QcrHk2TXKPouxrukjRXPkQwDQYJKoZIhvcNAQEL
+BQAwgakxCzAJBgNVBAYTAkVTMRIwEAYDVQQIDAlDYXN0ZWxsb24xHjAcBgNVBAcM
+FUNhc3RlbGxvbiBkZSBsYSBQbGFuYTEdMBsGA1UECgwUQ2FtaW5hcyBXZWIgUHJv
+amVjdHMxJTAjBgNVBAsMHERlcGFydGFtbWVudG8gZGUgSW5mb3JtYXRpY2ExIDAe
+BgNVBAMMF3d3dy5taWRvbWluaW9zZWd1cm8uY29tMB4XDTI2MDEyNTE0MzExNFoX
+DTI3MDEyNTE0MzExNFowgakxCzAJBgNVBAYTAkVTMRIwEAYDVQQIDAlDYXN0ZWxs
+b24xHjAcBgNVBAcMFUNhc3RlbGxvbiBkZSBsYSBQbGFuYTEdMBsGA1UECgwUQ2Ft
+aW5hcyBXZWIgUHJvamVjdHMxJTAjBgNVBAsMHERlcGFydGFtbWVudG8gZGUgSW5m
+b3JtYXRpY2ExIDAeBgNVBAMMF3d3dy5taWRvbWluaW9zZWd1cm8uY29tMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkcXPY8jnn5U+iOlMJ30GSNVk/Vqp
+Fjb9zJKQGyJSJC8/cPT5Rbi23TVadWQiSDtrgP3qEjHrtJhFNMZTrrEc0naeEPvl
+gwqVG7b7WMYCZuY8MD6omFfmT5V9UrF4yx0lEUYVYNo+ZiaRSqa7EnymAYVuqg0R
+1RgRPc21fseKxiIei2CV0r4hnpqi5HbZQsAnKEoqABgty0X6wuUMoLRvyYakVIJ4
+/+OMfurfWEIZXyDkexD5eMWvemnhma3wCzHJQOmOAgWVTxCGA45SiDmPX5BlJq9r
+VC+xhUXne1Ov16uqOPwtQex1U72o5FYJ/h8jJHd8DlaYC+0NPwvyCIMJzwIDAQAB
+o1MwUTAdBgNVHQ4EFgQUY1exyeUEaK5hFWOJkcCEXL071Q0wHwYDVR0jBBgwFoAU
+Y1exyeUEaK5hFWOJkcCEXL071Q0wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0B
+AQsFAAOCAQEAdYyjsbOXXFvA44l44375k/px0hj6TRIbT1h4aSCHqZbrAuqyUAXm
+l3v/H0n6Qf6NtUJfCjaQlTFwqmDAEgt76JbpTAD6LJdufnhc8MZ61fGo/zQ1eXAQ
+E8q/gGYeZ2n1LF65gIyceOp5zxVoG1QgkM8JzTdgPNsFu7Hz1V18hDNaiTxrTkyb
+1tehyompt5AfRsYsmX/QfaTONuyTnhSONow+68O2sq/NBaEV/jxINW18i7J9Pxg0
+jWRoIW0b4WTnco9GCkY4uqpdFFteqdCxs0wlUc7f5vpSMen/mzETYxoeXcmJSs8G
+npUOlkJS6Qt9hHf/6M7ulHOh+paynwsPIA==
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=C=ES, ST=Castellon, L=Castellon de la Plana, O=Caminas Web Projects, OU=Departammento de Informatica, CN=www.midominioseguro.com
+issuer=C=ES, ST=Castellon, L=Castellon de la Plana, O=Caminas Web Projects, OU=Departammento de Informatica, CN=www.midominioseguro.com
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Peer Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1637 bytes and written 1613 bytes
+Verification error: self-signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 2048 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self-signed certificate)
+---
+HTTP/1.1 400 Bad Request
+Date: Sun, 25 Jan 2026 14:50:57 GMT
+Server: Apache
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+Content-Length: 226
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+</body></html>
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 9CC801E59030CF7ECA217916F44D37F27702EC5CC120A48BB85BA1206446D681
+    Session-ID-ctx: 
+    Resumption PSK: 999C68935DC4C6094AB36A4CAD8F4165C60B435FDE7407359CB195C1DC3CCC5F0CCAC44CE1C3550EF8137A7B7F84F500
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 300 (seconds)
+    TLS session ticket:
+    0000 - 39 4f fd f6 5d 4b db f7-6a 83 8b b0 62 8c 36 ff   9O..]K..j...b.6.
+    0010 - d1 e5 d7 7e bc de 64 71-8f 29 37 ef 61 ac 7f 01   ...~..dq.)7.a...
+
+    Start Time: 1769352654
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self-signed certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: B04A8418FEDB81C1D795BFCCCA52524D1562ED4C4DB4BC3F17DD2C7C4217942F
+    Session-ID-ctx: 
+    Resumption PSK: 8F7B3A274C6BB53A63F1700E984FB9B5FA780928A6D85542B2900F596B5DEC3D69B2DE3B345C198FA56A0D286206497A
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 300 (seconds)
+    TLS session ticket:
+    0000 - 7f 74 50 fc 2c a9 22 4c-21 10 80 7f 83 01 71 dd   .tP.,."L!.....q.
+    0010 - 67 87 64 73 b6 08 bb c9-d4 c2 79 3f 0a 9e 8c 31   g.ds......y?...1
+
+    Start Time: 1769352654
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self-signed certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+closed
