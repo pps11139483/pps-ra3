@@ -48,6 +48,11 @@ Por último, en cuanto a la activación de las cabeceras y la ocultación de la 
 RUN echo "ServerTokens ProductOnly" >> /etc/apache2/apache2.conf && \
     echo "ServerSignature Off" >> /etc/apache2/apache2.conf
 ```
+## Pull
+
+```bash
+docker pull pps11139483/pps-ra3:ra3_1-tarea-1.1
+```
 
 ## Ejecución
 
@@ -79,11 +84,7 @@ Content-Type: text/html
 
 ## Capturas
 
-## Pull del contenedor
 
-```bash
-docker pull pps11139483/pps-ra3:ra3_1-tarea-1.1
-```
 
 ## Fuentes
 
