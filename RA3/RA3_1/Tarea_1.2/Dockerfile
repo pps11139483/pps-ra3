@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 # EJERCICIO 2: INSTALANDO EL WAF
 
-# Habilitamos la configuración por defectode modsecurity
+# Habilitamos la configuración por defecto de modsecurity
 RUN cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
 
 # Cambiamos de "DetectionOnly" a "On" (bloquea ataques)
