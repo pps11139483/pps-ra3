@@ -18,6 +18,8 @@ RUN mkdir -p /etc/apache2/ssl && \
 
 > **Nota:** Se utiliza el flag `-subj` para evitar que openssl no haga preguntas o solicite confirmación.
 
+> **Nota 2:** Las instrucciones originales contenían un error tipografico en el nombre del dominio ("midomimioseguro.com"). Se ha corregido para la práctica, pero a cambio introduje accidentalmente otro: "Departammento de Informatica". Lo he dejado así para que concuerde con las capturas de pantalla.
+
 El siguiente paso consiste en modificar el sitio default-ssl para que utilice los nuevos certificados que hemos generado. Esto se consigue con el comando `sed`.
 
 ```bash
@@ -111,6 +113,4 @@ curl -k -I https://localhost:8443/?testparam=test`
 
 ## Fuentes
 
-*   [Apache Module mod_alias (Redirect)](https://httpd.apache.org/docs/2.4/mod/mod_alias.html#redirect)
-*   [OpenSSL Command Line CSR Video](https://www.openssl.org/docs/manmaster/man1/openssl-req.html)
-*   [DigitalOcean - How To Create a Self-Signed SSL Certificate for Apache](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-16-04)
+*   [Instalación de un certificado digital en Apache](https://psegarrac.github.io/Ciberseguridad-PePS/tema1/practicas/2020/11/08/P1-SSL.html)
