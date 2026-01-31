@@ -7,11 +7,8 @@ RUN apt-get update && \
 
 # EJERCICIO 2: INSTALANDO EL WAF
 
-# Habilitamos la configuración por defecto de modsecurity
-RUN cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
-
-# Cambiamos de "DetectionOnly" a "On" (bloquea ataques)
-RUN sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
+# Habilitamos la configuración por defecto de modsecurity con "DetectionOnly" a "On" (bloquea ataques)
+COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
 
 # Copiamos el fichero PHP al servidor
 COPY post.php /var/www/html/post.php

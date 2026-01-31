@@ -12,12 +12,12 @@ RUN apt-get update && \
     apt-get clean
 ```
 
-Para que el WAF funcione, utilizamos el fichero de configuración que viene de ejemplo a la ruta `/etc/modsecurity/modsecurity.conf`.
+Para que el WAF funcione, utilizamos un dichero de configuración `/etc/modsecurity/modsecurity.conf` basado en la configuración que viene de ejemplo.
 
-La configuración que el fichero trae de serie solo detecta cuando hay match con una norma, así que activamos el bloqueo con un comando `sed` que cambia la directiva `SecRuleEngine` a `On`.
+La configuración que el fichero trae de serie solo detecta cuando hay match con una norma, así que ase cambia la directiva `SecRuleEngine` a `On`.
 
-```docker
-RUN sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
+```yaml
+SecRuleEngine On
 ```
 
 Por último, copiamos el fichero `post.php` a la imagen para poder probar el funcionamiento del WAF.
