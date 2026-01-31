@@ -133,24 +133,24 @@ curl -k -I "https://localhost:8443/post.php?input=<script>alert(1)</script>"
 A continuación se muestran las capturas de pantalla que demuestran el correcto funcionamiento del Core Rule Set y la regla personalizada.
 
 > Conexión **rechazada** con código de error `403` por la adición de parámetros bloqueados (la regla personalizada).<br>
-![Prueba 1](capturas/prueba1.png)
+![Prueba 1](capturas/prueba1.png)<br>
 Log de error.<br>
-![Log de prueba 1](capturas/prueba1_log.png)
+![Log de prueba 1](capturas/prueba1_log.png)<br>
 La regla también funciona en el sitio http:<br>
 ![Prueba 1 bis](capturas/prueba1_bis.png)
 
 > Conexión **rechazada** con código de error `403` por bloqueo de ejecución de comandos shell.<br>
-![Prueba 2](capturas/prueba2.png)
+![Prueba 2](capturas/prueba2.png)<br>
 Log de error.<br>
 ![Log de prueba 2](capturas/prueba2_log.png)
 
 > Conexión **rechazada** con código de error `403` por bloqueo de Path Traversal.<br>
-![Prueba 3](capturas/prueba3.png)
+![Prueba 3](capturas/prueba3.png)<br>
 Log de error.<br>
 ![Log de prueba 3](capturas/prueba3_log.png)
 
 > Conexión **rechazada** con código de error `403` por bloqueo de inyección de comandos en POST.<br>
-![Prueba 4](capturas/prueba4.png)
+![Prueba 4](capturas/prueba4.png)<br>
 Log de error.<br>
 ![Log de prueba 4](capturas/prueba4_log.png)
 

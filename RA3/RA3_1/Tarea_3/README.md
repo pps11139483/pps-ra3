@@ -332,6 +332,22 @@ apache         7  0.0  0.0 240752 32360 ?        S    12:37   0:00 apache2 -D FO
 
 O cualquier otra línea donde Apache se ejecute bajo el usuario no privilegiado configurado (en este caso, "apache"). El proceso padre (PID 1) se ejecutará como root, pero los procesos workers deben ser bajo el usuario "apache".
 
+---
+
+### 10. Verificación de que HTTP/TRACE está desactivado
+
+**Comando:**
+
+```bash
+curl -k -X TRACE https://localhost:8443
+```
+
+**Resultado esperado:***
+
+```text
+405 Method Not Allowed
+```
+
 ## Capturas
 
 > Verificación de las nuevas cabeceras de seguridad.<br>
@@ -360,6 +376,9 @@ O cualquier otra línea donde Apache se ejecute bajo el usuario no privilegiado 
 
 > Procesos worker de apache ejecutándose como usuario www-data.<br>
 ![Prueba 9](capturas/prueba9.png)
+
+> Verificación de Trace desactivado.<br>
+![Prueba 10](capturas/prueba10.png)
 
 ## Fuentes
 
