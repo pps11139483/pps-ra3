@@ -19,18 +19,13 @@ RUN mkdir -p /etc/modsecurity/crs/rules && \
     rm -rf owasp-modsecurity-crs
 
 # Carga explícita de reglas
-RUN sed -i '/IncludeOptional \/etc\/modsecurity\/\*\.conf/a \
-    Include /etc/modsecurity/crs/crs-setup.conf\n\
-    Include /etc/modsecurity/crs/rules/*.conf' \
-    /etc/apache2/mods-enabled/security2.conf
+COPY security2 /etc/apache2/mods-enabled/security2.conf
 
 # Bloquea si el parámetro "testparam" contiene "test" (ID 1234)
-RUN sed -i "s|</VirtualHost>|    SecRule ARGS:testparam \"@contains test\" \"id:1234,phase:2,deny,status:403,msg:'Cazado por Ciberseguridad'\"\n</VirtualHost>|" \
-    /etc/apache2/sites-available/default-ssl.conf
+COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 
 # Aplicamos el cambio también al sitio no seguro
-RUN sed -i "s|</VirtualHost>|    SecRule ARGS:testparam \"@contains test\" \"id:1234,phase:2,deny,status:403,msg:'Cazado por Ciberseguridad'\"\n</VirtualHost>|" \
-    /etc/apache2/sites-available/000-default.conf
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Volvemos al directorio web por defecto
 WORKDIR /var/www/html
