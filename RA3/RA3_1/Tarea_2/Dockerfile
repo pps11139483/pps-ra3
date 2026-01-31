@@ -9,8 +9,7 @@ RUN mkdir -p /etc/apache2/ssl && \
     -subj "/C=ES/ST=Castellon/L=Castellon de la Plana/O=Caminas Web Projects/OU=Departammento de Informatica/CN=www.midominioseguro.com"
 
 # Editamos default-ssl.conf reemplazando las rutas 'snakeoil' por las nuevas
-RUN sed -i 's|/etc/ssl/certs/ssl-cert-snakeoil.pem|/etc/apache2/ssl/apache.crt|g' /etc/apache2/sites-available/default-ssl.conf && \
-    sed -i 's|/etc/ssl/private/ssl-cert-snakeoil.key|/etc/apache2/ssl/apache.key|g' /etc/apache2/sites-available/default-ssl.conf
+COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 
 # Redirección permanente de HTTP (80) a HTTPS (443) modificando el sitio por defecto
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
