@@ -122,6 +122,10 @@ SecAuditLog /var/log/apache2/modsec_audit.log
 
 La recomendación de configurar la directiva `Listen` con una IP absoluta (ej. `Listen 10.10.10.1:80`) **no se ha implementado** directamente en el archivo de configuración de Apache. En un entorno Docker, la gestión de IPs de escucha se delega al runtime de Docker. "Quemamos" una IP específica en la imagen haría que el contenedor fuera menos portable. La restricción de acceso por IP debe realizarse al ejecutar el contenedor (ej. `docker run -p 127.0.0.1:8080:80 ...`) o mediante firewalls externos.
 
+### Justificación: Ejecutar todo como usuario `apache`
+
+Ejecutar todo el contenedor como el usuario `apache` no es trivial: Apache necesita privilegios de arranque (bind a puertos <1024, crear PID/lock, leer configs) que normalmente realiza el proceso maestro como root y luego los workers bajan a un usuario no privilegiado; forzar todo a `apache` obliga a cambiar propietarios/permiso en `/etc/apache2`, `/var/run` y logs o a otorgar capacidades al binario, lo que reduce seguridad y portabilidad. Por eso la práctica recomendada es iniciar como root para preparar el entorno y dejar que los procesos worker ejecuten el trabajo con el usuario no privilegiado.
+
 ### Tabla resumen
 
 | Tarea | Implementación |
@@ -296,15 +300,17 @@ Server: Servidor_Seguro_PPS
 ### 8. Verificar permisos de directorios
 - **Comando:**
 
-    ```bash
-    ```
+```bash
+docker exec tarea3 stat -c "%a" /etc/apache2
+docker exec tarea3 stat -c "%a" /var/log/apache2
+```
 
 **Resultado esperado:**
 
-    ```text
-    # En ambos casos:
-    750
-    ```
+```text
+En ambos casos:
+750
+```
 
 ### 9. Verificaciń de Apache ejecutándose con usuario no privilegiado:**
 
@@ -324,8 +330,32 @@ O cualquier otra línea donde Apache se ejecute bajo el usuario no privilegiado 
 
 ## Capturas
 
-> Resultados de las pruebas con curl
-![Pruebas curl](capturas/pruebas_curl.png)
+> Verificación de las nuevas cabeceras de seguridad.<br>
+![Prueba 1](capturas/prueba1.png)
+
+> Forzado de HTTP/1.1.<br>
+![Prueba 2](capturas/prueba2.png)
+
+> Bloqueo de método PUT.<br>
+![Prueba 3](capturas/prueba3.png)
+
+> Bloqueo de método DELETE.<br>
+![Prueba 4](capturas/prueba4.png)
+
+> Verificación de método GET.<br>
+![Prueba 5](capturas/prueba5.png)
+
+> Verificación de método POST.<br>
+![Prueba 6](capturas/prueba6.png)
+
+> Verificación de ofuscación de banner.<br>
+![Prueba 7](capturas/prueba7.png)
+
+> Permisos de directorios.<br>
+![Prueba 8](capturas/prueba8.png)
+
+> Procesos worker de apache ejecutándose como usuario www-data.<br>
+![Prueba 9](capturas/prueba9.png)
 
 ## Fuentes
 

@@ -53,10 +53,4 @@ ENV APACHE_RUN_GROUP apache
 # Ajustamos la propiedad de directorios críticos para el nuevo usuario
 RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/lock/apache2
 
-# Crear un script de entrada que source las variables de entorno y ejecute Apache como usuario no privilegiado
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Usar el script de entrada que configurará el usuario no privilegiado
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
+# El comando de inicio sigue siendo el mismo que en la imagen base
