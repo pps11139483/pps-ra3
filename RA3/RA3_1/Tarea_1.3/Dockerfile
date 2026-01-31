@@ -19,7 +19,7 @@ RUN mkdir -p /etc/modsecurity/crs/rules && \
     rm -rf owasp-modsecurity-crs
 
 # Carga explícita de reglas
-COPY security2 /etc/apache2/mods-enabled/security2.conf
+COPY security2.conf /etc/apache2/mods-enabled/security2.conf
 
 # Bloquea si el parámetro "testparam" contiene "test" (ID 1234)
 COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
