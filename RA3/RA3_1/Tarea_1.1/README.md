@@ -45,8 +45,8 @@ Por último, en cuanto a la activación de las cabeceras y la ocultación de la 
 
 ```bash
 # Habilitar cabeceras y ocultar versión del servidor
-RUN echo "ServerTokens ProductOnly" >> /etc/apache2/apache2.conf && \
-    echo "ServerSignature Off" >> /etc/apache2/apache2.conf
+ServerTokens ProductOnly
+ServerSignature Off
 ```
 ## Pull
 
