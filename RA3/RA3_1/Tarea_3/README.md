@@ -348,6 +348,23 @@ curl -k -X TRACE https://localhost:8443
 405 Method Not Allowed
 ```
 
+---
+
+### 11. Verificación del formato de registros
+
+**Comando:**
+
+```bash
+docker exec tarea3 tail /var/log/access.log
+```
+
+**Resultado esperado:***
+
+```text
+172.17.0.1 - - [31/Jan/2026:21:50:15 +0000] "-" "GET / HTTP/1.1" 200 3450 0
+172.17.0.1 - - [31/Jan/2026:21:52:10 +0000] "abc123secret" "POST /login HTTP/1.1" 302 450 2
+```
+
 ## Capturas
 
 > Verificación de las nuevas cabeceras de seguridad.<br>
@@ -379,6 +396,9 @@ curl -k -X TRACE https://localhost:8443
 
 > Verificación de Trace desactivado.<br>
 ![Prueba 10](capturas/prueba10.png)
+
+> Verificación de formato de logs custom.<br>
+![Prueba 11](capturas/prueba11.png)
 
 ## Fuentes
 
