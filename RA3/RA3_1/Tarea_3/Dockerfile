@@ -18,6 +18,7 @@ RUN a2enconf limit-methods
 # - X-XSS-Protection: Filtro contra XSS en el navegador
 # - Cookies: Añade flags Secure y HttpOnly (requiere mod_headers ya activo)
 COPY security-headers.conf /etc/apache2/conf-available/security-headers.conf
+RUN a2enconf security-headers
 
 # Sitio seguro con hardening de Ciphers SSL (Solo algoritmos fuertes) 
 COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
