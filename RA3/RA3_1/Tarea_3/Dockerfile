@@ -30,14 +30,17 @@ COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 
 # Cambiar el Banner del servidor con ModSecurity 
 # Requiere que ServerTokens esté en 'Full' para que ModSecurity pueda manipularlo
-RUN mkdir -p /etc/apache2/modsecurity && \
-    echo 'SecServerSignature "Servidor_Seguro_PPS"' >> /etc/apache2/modsecurity/modsecurity.conf
+# Activamos el motor de auditoría y definimos la ruta del log
+COPY modsecurity.conf /etc/apache2/modsecurity/modsecurity.conf
 
 # Bloqueo de protocolo HTTP 1.0 (Obligar uso de HTTP 1.1)
 # Requiere mod_rewrite habilitado
 RUN a2enmod rewrite
 COPY block-http10.conf /etc/apache2/conf-available/block-http10.conf
 RUN a2enconf block-http10
+
+# Deshabilitar módulos no deseados (WebDAV e Info)
+RUN a2dismod -f autoindex dav dav_fs info
 
 # Protección de permisos de directorios de sistema y configuración
 # Restringimos acceso a binarios y carpetas de configuración (750)
@@ -54,12 +57,3 @@ RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/
 
 # Los puertos y el arranque se heredan de la imagen anterior
 
-# TAREA 3.1: Deshabilitar módulos no deseados (WebDAV e Info)
-RUN a2dismod -f autoindex dav dav_fs info
-
-# Modificamos el formato 'common' para incluir %T (tiempo) y %{sessionID}C (cookie de sesión)
-
-# TAREA 3.3: Configurar ModSecurity Audit Log
-# Activamos el motor de auditoría y definimos la ruta del log
-RUN echo "SecAuditEngine On" >> /etc/apache2/modsecurity/modsecurity.conf && \
-    echo "SecAuditLog /var/log/apache2/modsec_audit.log" >> /etc/apache2/modsecurity/modsecurity.conf
