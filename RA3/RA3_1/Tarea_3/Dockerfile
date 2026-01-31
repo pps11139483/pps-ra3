@@ -17,6 +17,7 @@ RUN a2enconf limit-methods
 # - X-Frame-Options: Evita Clickjacking
 # - X-XSS-Protection: Filtro contra XSS en el navegador
 # - Cookies: Añade flags Secure y HttpOnly (requiere mod_headers ya activo)
+RUN a2enmod headers
 COPY security-headers.conf /etc/apache2/conf-available/security-headers.conf
 RUN a2enconf security-headers
 
@@ -26,7 +27,12 @@ COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 # Cambiar el Banner del servidor con ModSecurity 
 # Requiere que ServerTokens esté en 'Full' para que ModSecurity pueda manipularlo
 # Activamos el motor de auditoría y definimos la ruta del log
+RUN a2enmod security2
+RUN mkdir -p /etc/apache2/modsecurity
 COPY modsecurity.conf /etc/apache2/modsecurity/modsecurity.conf
+# Crear configuración mínima de ModSecurity si no existe
+RUN test -f /etc/apache2/mods-available/security2.conf || echo 'Include /etc/apache2/modsecurity/modsecurity.conf' > /etc/apache2/mods-available/security2.conf
+RUN a2enmod security2 2>/dev/null || true
 
 # Bloqueo de protocolo HTTP 1.0 (Obligar uso de HTTP 1.1)
 # Requiere mod_rewrite habilitado
