@@ -29,7 +29,7 @@ COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 # Activamos el motor de auditoría y definimos la ruta del log
 RUN a2enmod security2
 RUN mkdir -p /etc/apache2/modsecurity
-COPY modsecurity.conf /etc/apache2/modsecurity/modsecurity.conf
+COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
 
 # Bloqueo de protocolo HTTP 1.0 (Obligar uso de HTTP 1.1)
 # Requiere mod_rewrite habilitado
