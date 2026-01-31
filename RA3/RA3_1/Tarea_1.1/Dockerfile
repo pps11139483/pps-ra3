@@ -18,8 +18,7 @@ RUN a2dismod autoindex -f
 RUN a2enmod headers ssl
 
 # Habilitar cabeceras y ocultar versión del servidor
-RUN echo "ServerTokens ProductOnly" >> /etc/apache2/apache2.conf && \
-    echo "ServerSignature Off" >> /etc/apache2/apache2.conf
+COPY apache2.conf /etc/apache2/apache2.conf
 
 # Configurar CSP básica
 COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
