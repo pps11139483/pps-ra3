@@ -6,15 +6,20 @@ En esta tarea se han aplicado diversas medidas de **hardening** (fortalecimiento
 
 Para comenzar, se ha configurado el servidor para restringir el acceso y la visibilidad de archivos críticos. Mediante la directiva `AllowOverride None`, deshabilitamos el uso de archivos `.htaccess`, lo que evita que configuraciones locales puedan saltarse las directivas de seguridad globales. Además, se desactivó el listado automático de directorios con `Options -Indexes` para que los usuarios no puedan ver la estructura de carpetas si no existe un archivo de índice, y se han eliminado los *Server Side Includes* con `-Includes` para reducir riesgos de ejecución de código.
 
-```dockerfile
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride.*/AllowOverride None/' /etc/apache2/apache2.conf && \
-    sed -i 's/Options Indexes FollowSymLinks/Options -Indexes -Includes/' /etc/apache2/apache2.conf
+# apache2.conf:
+```apache
+<Directory /var/www/>
+	Options -Indexes -Includes
+	AllowOverride None
+	Require all granted
+</Directory>
 ```
 
 Para evitar la fuga de información sensible, se han desactivado los **ETags** con la directiva `FileETag None`. Esto impide que el servidor revele atributos internos de los archivos, como el número de inodo, que podrían ser utilizados para deducir detalles del sistema de archivos.
 
-```dockerfile
-RUN echo "FileETag None" >> /etc/apache2/apache2.conf
+# apache2.conf:
+```apache
+FileETag None
 ```
 
 En cuanto a la gestión de peticiones, se han restringido los métodos HTTP permitidos únicamente a **GET, POST y HEAD**. Al definir este límite en un archivo de configuración específico, bloqueamos métodos potencialmente peligrosos como `PUT`, `DELETE` o `CONNECT` que no son necesarios para el funcionamiento normal de la web.
@@ -29,37 +34,46 @@ En cuanto a la gestión de peticiones, se han restringido los métodos HTTP perm
 
 Asimismo, se ha deshabilitado explícitamente el método **TRACE** (`TraceEnable off`), protegiendo al servidor contra ataques de *Cross-Site Tracing* (XST) que intentan robar cookies de sesión HTTP.
 
-```dockerfile
-RUN echo "TraceEnable off" >> /etc/apache2/apache2.conf
+# apache2.conf:
+```apache
+TraceEnable off
 ```
 
 Para fortalecer la seguridad en el navegador del usuario, se han inyectado varias **cabeceras de seguridad**. La cabecera `X-Frame-Options SAMEORIGIN` previene ataques de *Clickjacking* al prohibir que nuestro sitio sea embebido en iframes externos. Con `X-XSS-Protection`, activamos los filtros contra ataques XSS en navegadores antiguos, y mediante la edición de `Set-Cookie`, se asegura que todas las cookies se envíen con los flags `HttpOnly` (inaccesibles para scripts) y `Secure` (solo transmitidas por HTTPS).
 
-```dockerfile
-RUN echo 'Header always append X-Frame-Options SAMEORIGIN' >> /etc/apache2/conf-available/security-headers.conf && \
-    echo 'Header set X-XSS-Protection "1; mode=block"' >> /etc/apache2/conf-available/security-headers.conf && \
-    echo 'Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure' >> /etc/apache2/conf-available/security-headers.conf
+# security-headers.conf:
+```apache
+Header always append X-Frame-Options SAMEORIGIN
+Header set X-XSS-Protection "1; mode=block"
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
 ```
 
 Para mitigar ataques de **Denegación de Servicio (DoS)** como *Slowloris*, se ha reducido el tiempo de `Timeout` a 60 segundos, forzando el cierre de conexiones inactivas más rápidamente y liberando recursos para otros usuarios legítimos.
 
-```dockerfile
-RUN sed -i 's/^Timeout .*/Timeout 60/' /etc/apache2/apache2.conf
+# apache2.conf:
+```apache
+Timeout 60
 ```
 
-La seguridad de las comunicaciones se ha reforzado mediante el **Hardening de Ciphers SSL**. Se ha configurado el servidor para aceptar exclusivamente TLS 1.2 o superior, eliminando protocolos obsoletos, y se ha definido una suite de cifrado fuerte (`HIGH:!MEDIUM:!aNULL:!MD5:!RC4`) para evitar el uso de algoritmos vulnerables.
+La seguridad de las comunicaciones se ha reforzado mediante el **Hardening de Ciphers SSL**. Se ha configurado el servidor para aceptar exclusivamente TLS 1.2 o superior, eliminando protocolos obsoletos, y se ha definido una suite de cifrado fuerte para evitar el uso de algoritmos vulnerables.
 
-```dockerfile
-RUN sed -i 's/SSLCipherSuite .*/SSLCipherSuite HIGH:!MEDIUM:!aNULL:!MD5:!RC4/' /etc/apache2/sites-available/default-ssl.conf && \
-    sed -i 's/SSLProtocol .*/SSLProtocol -all +TLSv1.2/' /etc/apache2/sites-available/default-ssl.conf
+# default-ssl.conf:
+```apache
+SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1 +TLSv1.2 +TLSv1.3
+SSLCipherSuite HIGH:!aNULL:!MD5:!3DES
+SSLHonorCipherOrder on
 ```
 
-Una medida adicional de ofuscación ha sido camuflar el banner del servidor. Aunque inicialmente se configuró `ServerTokens Prod`, en esta tarea se ha utilizado **ModSecurity** para modificar la firma del servidor a "Servidor_Seguro_PPS", dificultando el reconocimiento de la tecnología subyacente por parte de atacantes.
+Una medida adicional de ofuscación ha sido camuflar el banner del servidor. Se ha configurado `ServerTokens Full` y se ha utilizado **ModSecurity** para modificar la firma del servidor a "Servidor_Seguro_PPS", dificultando el reconocimiento de la tecnología subyacente por parte de atacantes.
 
-```dockerfile
-RUN mkdir -p /etc/apache2/modsecurity && \
-    sed -i 's/ServerTokens Prod/ServerTokens Full/' /etc/apache2/apache2.conf && \
-    echo 'SecServerSignature "Servidor_Seguro_PPS"' >> /etc/apache2/modsecurity/modsecurity.conf
+# apache2.conf:
+```apache
+ServerTokens Full
+```
+
+# modsecurity.conf:
+```apache
+SecServerSignature "Servidor_Seguro_PPS"
 ```
 
 También se ha bloqueado el protocolo **HTTP 1.0**, obligando a todos los clientes a utilizar HTTP 1.1. Esto se consigue mediante reglas de reescritura que deniegan cualquier petición que no cumpla con esta versión del protocolo, asegurando que se beneficien de las mejoras de seguridad y rendimiento de las versiones más modernas.
@@ -89,16 +103,17 @@ RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/
 
 Siguiendo las mejores prácticas, se han deshabilitado módulos innecesarios como **WebDAV** (`mod_dav`, `mod_dav_fs`) y **mod_info**, que podrían ser vectores de ataque o fuga de información. Además, se ha personalizado el formato de los logs de acceso (`LogFormat`) para incluir el tiempo de respuesta (`%T`) y el ID de sesión (`%{sessionID}C`), mejorando la capacidad de auditoría y depuración.
 
-```dockerfile
-RUN a2dismod -f autoindex dav dav_fs info
-RUN sed -i 's/LogFormat .* common/LogFormat "%h %l %u %t \\"%{sessionID}C\\" \\"%r\\" %>s %b %T" common/' /etc/apache2/apache2.conf
+# apache2.conf:
+```apache
+LogFormat "%h %l %u %t \"%{sessionID}C\" \"%r\" %>s %b %T" common
 ```
 
 Se ha habilitado el **Audit Log** de ModSecurity para registrar transacciones marcadas por las reglas. Esto se configura activando `SecAuditEngine` y definiendo la ruta del log con `SecAuditLog`.
 
-```dockerfile
-RUN echo "SecAuditEngine On" >> /etc/apache2/modsecurity/modsecurity.conf && \
-    echo "SecAuditLog /var/log/apache2/modsec_audit.log" >> /etc/apache2/modsecurity/modsecurity.conf
+# modsecurity.conf:
+```apache
+SecAuditEngine On
+SecAuditLog /var/log/apache2/modsec_audit.log
 ```
 
 ### Justificación: Configure Listen
@@ -109,29 +124,29 @@ La recomendación de configurar la directiva `Listen` con una IP absoluta (ej. `
 
 | Tarea | Implementación |
 | --- | --- |
-| Remove Server Version Banner | Implementado en Tarea 1.1 |
-| Disable directory browser listing | Dockerfile, línea 8 |
-| Etag | Dockerfile, línea 12 |
-| Run Apache from a non-privileged account | Dockerfile, líneas 57 a 59 |
-| Protect binary and configuration directory permissions | Dockerfile, línea 53 |
-| System Settings Protection | Dockerfile, línea 8 |
+| Remove Server Version Banner | apache2.conf, línea 8 |
+| Disable directory browser listing | apache2.conf, línea 42 |
+| Etag | apache2.conf, línea 6 |
+| Run Apache from a non-privileged account | Dockerfile, líneas 47-49 |
+| Protect binary and configuration directory permissions | Dockerfile, línea 45 |
+| System Settings Protection | apache2.conf, línea 42 |
 | HTTP Request Methods | limit-methods.conf |
-| Disable Trace HTTP Request | Dockerfile, línea 20 |
-| Set cookie with HttpOnly and Secure flag | Dockerfile, línea 28 |
-| Clickjacking Attack | Dockerfile, línea 26 |
-| Server Side Include | Dockerfie, línea 9 |
-| X-XSS Protection | Dockerfile, línea 27 |
+| Disable Trace HTTP Request | apache2.conf, línea 7 |
+| Set cookie with HttpOnly and Secure flag | security-headers.conf, línea 3 |
+| Clickjacking Attack | security-headers.conf, línea 1 |
+| Server Side Include | apache2.conf, línea 42 |
+| X-XSS Protection | security-headers.conf, línea 2 |
 | Disable HTTP 1.0 Protocol | block-http10.conf |
-| Timeout value configuration | Dockerfile, línea 32 |
+| Timeout value configuration | apache2.conf, línea 5 |
 | SSL Key | Implementado en Tarea 2 |
-| SSL Cipher | Dockerfile, línea 36 |
-| Disable SSL v2 & v3 | Dockerfile, línea 37 |
-| ModSecurity | Implementado en Tareas 1.2 y 1.3 |
-| ModSecurity Logging | Dockerfile, líneas 75 a 76 |
-| Change Server Banner | Dockerfile, líneas 41 a 43 |
+| SSL Cipher | default-ssl.conf, líneas 41-42 |
+| Disable SSL v2 & v3 | default-ssl.conf, línea 40 |
+| ModSecurity | modsecurity.conf (lineas 1-2) |
+| ModSecurity Logging | modsecurity.conf (líneas 50-52) |
+| Change Server Banner | default-ssl.conf, línea 29 |
 | Configure Listen Port | No aplica en Docker |
-| Access Logging | Dockerfile, línea 71 |
-| Disable Loading unwanted modules | Dockerfile, línea 67 |
+| Access Logging | apache2.conf, línea 11 |
+| Disable Loading unwanted modules | Dockerfile, línea 41 |
 
 ## Pull
 
@@ -147,23 +162,159 @@ docker run -d -p 8443:443 --name tarea2 pps11139483/pps-ra3:ra3_1-tarea-3
 
 ## Pruebas y validación
 
-### 1. Prueba 1
-**Comando:** 
+### 1. Validar cabeceras de seguridad
+
+**Comando:**
 
 ```bash
-curl -I http://localhost:8080/
+curl -k -I https://localhost:8443/
+```
+
+**Resultado esperado:**
+
+```http
+HTTP/1.1 200 OK
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+Content-Security-Policy: default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+Server: Apache (sin versión visible)
+```
+
+**Objetivo:** Verificar que todas las cabeceras de seguridad están presentes y correctamente configuradas.
+
+---
+
+### 2. Verificar bloqueo de HTTP 1.0
+
+**Comando:**
+
+```bash
+curl -k -v --http1.0 https://localhost:8443/ 2>&1 | grep -E "HTTP/|Forbidden"
 ```
 
 **Resultado esperado:**
 
 ```bash
-HTTP/1.1 301 Moved Permanently
+403 Forbidden
 ```
+
+**Objetivo:** Asegurar que el servidor rechaza conexiones que no utilicen HTTP 1.1 o superior.
+
+---
+
+### 3. Comprobar métodos HTTP bloqueados (PUT)
+
+**Comando:**
+
+```bash
+curl -k -X PUT https://localhost:8443/index.html -d "test"
+```
+
+**Resultado esperado:**
+
+```bash
+HTTP/1.1 403 Forbidden
+```
+
+**Objetivo:** Verificar que métodos peligrosos como PUT están bloqueados por `limit-methods.conf`.
+
+---
+
+### 4. Comprobar métodos HTTP bloqueados (DELETE)
+
+**Comando:**
+
+```bash
+curl -k -X DELETE https://localhost:8443/index.html
+```
+
+**Resultado esperado:**
+
+```bash
+HTTP/1.1 403 Forbidden
+```
+
+**Objetivo:** Verificar que el método DELETE también está correctamente bloqueado.
+
+---
+
+### 5. Validar GET permitido
+
+**Comando:**
+
+```bash
+curl -k -X GET https://localhost:8443/
+```
+
+**Resultado esperado:**
+
+```bash
+HTTP/1.1 200 OK
+```
+
+**Objetivo:** Confirmar que GET funciona correctamente como método permitido.
+
+---
+
+### 6. Validar POST permitido
+
+**Comando:**
+
+```bash
+curl -k -X POST https://localhost:8443/ -d "test=data"
+```
+
+**Resultado esperado:**
+
+```bash
+HTTP/1.1 200 OK
+```
+
+**Objetivo:** Confirmar que POST funciona correctamente como método permitido.
+
+---
+
+### 7. Comprobar regla WAF personalizada (testparam=test)
+
+**Comando:**
+
+```bash
+curl -k -I "https://localhost:8443/?testparam=test"
+```
+
+**Resultado esperado:**
+
+```bash
+HTTP/1.1 403 Forbidden
+msg:'Cazado por Ciberseguridad'
+```
+
+**Objetivo:** Verificar que la regla ModSecurity `id:1234` definida en `default-ssl.conf` bloquea la solicitud.
+
+---
+
+### 8. Verificar server banner ofuscado
+
+**Comando:**
+
+```bash
+curl -k -I https://localhost:8443/ | grep Server
+```
+
+**Resultado esperado:**
+
+```
+Server: Apache (versión oculta)
+```
+
+**Objetivo:** Confirmar que la información del servidor está ofuscada para evitar reconocimiento de versión.
+
 
 ## Capturas
 
-> Captura de la prueba 1
-![Prueba 1](capturas/prueba1.png)
+> Resultados de las pruebas con curl
+![Pruebas curl](capturas/pruebas_curl.png)
 
 ## Fuentes
 
