@@ -83,7 +83,7 @@ Content-Security-Policy: default-src 'self'; img-src 'self'; script-src 'self'; 
 
 ## Capturas
 
-> Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.
+> Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.<br>
 ![Prueba 1](capturas/prueba1.png)
 
 

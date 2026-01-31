@@ -96,18 +96,18 @@ curl -k -I https://localhost:8443/?testparam=test`
 
 ## Capturas
 
-> Prueba de redirección HTTP a HTTPS.
+> Prueba de redirección HTTP a HTTPS.<br>
 ![Prueba 1](capturas/prueba1.png)
 
-> Inspección del certificado SSL.
+> Inspección del certificado SSL.<br>
 ![Prueba 2](capturas/prueba2.png)
 [> **Descargar el output completo del comando**](./certinfo.txt)
 
 
-> Comprobación de que el WAF sigue operativo.
+> Comprobación de que el WAF sigue operativo.<br>
 ![Prueba 3](capturas/prueba3.png)
 
-> Prueba de navegación segura.
+> Prueba de navegación segura.<br>
 ![Prueba 4](capturas/prueba4.png)
 
 

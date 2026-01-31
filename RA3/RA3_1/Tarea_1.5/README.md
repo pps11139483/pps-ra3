@@ -161,26 +161,26 @@ ab -n 1000 -c 20 https://localhost:8443/
 
 ## Capturas
 
-> Conexión **rechazada** con código de error `403` por la adición de parámetros bloqueados (la regla personalizada).
+> Conexión **rechazada** con código de error `403` por la adición de parámetros bloqueados (la regla personalizada).<br>
 ![Prueba 1](capturas/prueba1.png)
 
-> Conexión **rechazada** con código de error `403` por bloqueo de inyección de comandos en POST.
+> Conexión **rechazada** con código de error `403` por bloqueo de inyección de comandos en POST.<br>
 ![Prueba 2](capturas/prueba2.png)
 
-> Conexión **rechazada** con código de error `403` por bloqueo de Path Traversal.
+> Conexión **rechazada** con código de error `403` por bloqueo de Path Traversal.<br>
 ![Prueba 3](capturas/prueba3.png)
 
-> Conexión **rechazada** con código de error `403` por bloqueo de ejecución de comandos shell.
+> Conexión **rechazada** con código de error `403` por bloqueo de ejecución de comandos shell.<br>
 ![Prueba 4](capturas/prueba4.png)
 
-> Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.
+> Curl al sitio **https** servidor Apache donde se muestran las **cabeceras de seguridad**.<br>
 ![Prueba 5](capturas/prueba5.png)
 
-> Ejecución de `ab`.
+> Ejecución de `ab`.<br>
 ![Prueba 6](capturas/prueba6.png)
 [> **Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
 
-> Prueba de navegación por el sitio HTTPS.
+> Prueba de navegación por el sitio HTTPS.<br>
 ![Prueba 7](capturas/prueba7.png)
 
 

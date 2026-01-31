@@ -63,10 +63,10 @@ Strict-Transport-Security: max-age=63072000; includeSubDomains
 
 ## Capturas
 
-> Conexión **rechazada** por ModSecurity con código `403`.
+> Conexión **rechazada** por ModSecurity con código `403`.<br>
 ![Prueba 1](capturas/prueba1.png)
 
-> Evento capturado en los **logs de error** de Apache..
+> Evento capturado en los **logs de error** de Apache..<br>
 ![Prueba 1](capturas/prueba2.png)
 
 ## Fuentes

@@ -108,10 +108,10 @@ dos-172.17.0.1
 ## Capturas
 
 > Ejecución de `ab`.
-![Prueba 1](capturas/prueba1.png)
+![Prueba 1](capturas/prueba1.png)<br>
 [> **Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
 
-> Registros de bloqueo de apache.
+> Registros de bloqueo de apache.<br>
 ![Prueba 2](capturas/prueba2.png)
 
 ## Fuentes
