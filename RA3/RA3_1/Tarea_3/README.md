@@ -118,11 +118,11 @@ SecAuditEngine On
 SecAuditLog /var/log/apache2/modsec_audit.log
 ```
 
-### Justificación: Configure Listen
+### Justificación 1: Configure Listen
 
 La recomendación de configurar la directiva `Listen` con una IP absoluta (ej. `Listen 10.10.10.1:80`) **no se ha implementado** directamente en el archivo de configuración de Apache. En un entorno Docker, la gestión de IPs de escucha se delega al runtime de Docker. "Quemamos" una IP específica en la imagen haría que el contenedor fuera menos portable. La restricción de acceso por IP debe realizarse al ejecutar el contenedor (ej. `docker run -p 127.0.0.1:8080:80 ...`) o mediante firewalls externos.
 
-### Justificación: Ejecutar todo como usuario `apache`
+### Justificación 2: Ejecutar todo como usuario `apache`
 
 Ejecutar todo el contenedor como el usuario `apache` no es trivial: Apache necesita privilegios de arranque (bind a puertos <1024, crear PID/lock, leer configs) que normalmente realiza el proceso maestro como root y luego los workers bajan a un usuario no privilegiado; forzar todo a `apache` obliga a cambiar propietarios/permiso en `/etc/apache2`, `/var/run` y logs o a otorgar capacidades al binario, lo que reduce seguridad y portabilidad. Por eso la práctica recomendada es iniciar como root para preparar el entorno y dejar que los procesos worker ejecuten el trabajo con el usuario no privilegiado.
 
@@ -130,28 +130,28 @@ Ejecutar todo el contenedor como el usuario `apache` no es trivial: Apache neces
 
 | Tarea | Implementación |
 | --- | --- |
-| Remove Server Version Banner | apache2.conf, línea 8 |
-| Disable directory browser listing | apache2.conf, línea 42 |
-| Etag | apache2.conf, línea 6 |
-| Run Apache from a non-privileged account | Dockerfile, líneas 47-49 |
+| Remove Server Version Banner | modsecurity.conf, línea 207 |
+| Disable directory browser listing | apache2.conf, línea 40 |
+| Etag | apache2.conf, línea 7 |
+| Run Apache from a non-privileged account | Ver justificación 2 |
 | Protect binary and configuration directory permissions | Dockerfile, línea 45 |
-| System Settings Protection | apache2.conf, línea 42 |
+| System Settings Protection | apache2.conf, línea 43 |
 | HTTP Request Methods | limit-methods.conf |
-| Disable Trace HTTP Request | apache2.conf, línea 7 |
+| Disable Trace HTTP Request | apache2.conf, línea 8 |
 | Set cookie with HttpOnly and Secure flag | security-headers.conf, línea 3 |
 | Clickjacking Attack | security-headers.conf, línea 1 |
-| Server Side Include | apache2.conf, línea 42 |
+| Server Side Include | apache2.conf, línea 40 |
 | X-XSS Protection | security-headers.conf, línea 2 |
 | Disable HTTP 1.0 Protocol | block-http10.conf |
-| Timeout value configuration | apache2.conf, línea 5 |
+| Timeout value configuration | apache2.conf, línea 6 |
 | SSL Key | Implementado en Tarea 2 |
-| SSL Cipher | default-ssl.conf, líneas 41-42 |
-| Disable SSL v2 & v3 | default-ssl.conf, línea 40 |
-| ModSecurity | modsecurity.conf (lineas 1-2) |
-| ModSecurity Logging | modsecurity.conf (líneas 50-52) |
-| Change Server Banner | default-ssl.conf, línea 29 |
-| Configure Listen Port | No aplica en Docker |
-| Access Logging | apache2.conf, línea 11 |
+| SSL Cipher | default-ssl.conf, línea 35 |
+| Disable SSL v2 & v3 | default-ssl.conf, línea 32 |
+| ModSecurity | modsecurity.conf |
+| ModSecurity Logging | modsecurity.conf |
+| Change Server Banner | modsecurity.conf |
+| Configure Listen Port | Ver justificación 1 |
+| Access Logging | apache2.conf, línea 12 |
 | Disable Loading unwanted modules | Dockerfile, línea 41 |
 
 ## Pull
