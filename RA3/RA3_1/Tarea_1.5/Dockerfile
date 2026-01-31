@@ -16,19 +16,11 @@ RUN rm -rf /usr/share/modsecurity-crs && \
 # Copiamos el setup de ejemplo del CRS
 RUN mv /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-crs/crs-setup.conf
 
-# Configuración del Motor ModSecurity
-# Descargamos el archivo de configuración
-RUN mkdir -p /etc/modsecurity && \
-    curl -o /etc/modsecurity/modsecurity.conf https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/modsecurity.conf-recommended && \
-    curl -o /etc/modsecurity/unicode.mapping https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping
-
 # Activamos el modo bloqueo (SecRuleEngine On)
-RUN sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
+COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
 
 # Archivo maestro de inclusión de reglas para Nginx
-RUN echo "Include /etc/modsecurity/modsecurity.conf" > /etc/nginx/modsec_includes.conf && \
-    echo "Include /usr/share/modsecurity-crs/crs-setup.conf" >> /etc/nginx/modsec_includes.conf && \
-    echo "Include /usr/share/modsecurity-crs/rules/*.conf" >> /etc/nginx/modsec_includes.conf
+COPY modsec_includes.conf /etc/nginx/modsec_includes.conf
 
 # Copiamos nuestra configuración personalizada de Nginx
 COPY default.conf /etc/nginx/conf.d/default.conf
