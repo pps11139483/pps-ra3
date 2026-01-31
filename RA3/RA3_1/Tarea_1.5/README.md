@@ -27,14 +27,23 @@ RUN mv /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-
 ```
 
 Con las reglas CSR preparadas, terminamos de configurar mod_security.
+Reutilizamos el fuchero `modsecurity.conf` de anteriores ejercicios.
+También agregamos un fichero `modsec_includes.conf` con las ubicacione de las reglas y configuraciones a cargar.
 
-```dockerfile
-RUN sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/modsecurity.conf
-
-RUN echo "Include /etc/modsecurity/modsecurity.conf" > /etc/nginx/modsec_includes.conf && \
-    echo "Include /usr/share/modsecurity-crs/crs-setup.conf" >> /etc/nginx/modsec_includes.conf && \
-    echo "Include /usr/share/modsecurity-crs/rules/*.conf" >> /etc/nginx/modsec_includes.conf
+```bash
+# modsec_includes.conf
+Include /etc/modsecurity/modsecurity.conf
+Include /usr/share/modsecurity-crs/crs-setup.conf
+Include /usr/share/modsecurity-crs/rules/*.conf
 ```
+
+Tuve que añadir el fichero [unicode.mapping](https://raw.githubusercontent.com/SpiderLabs/ModSecurity/v3/master/unicode.mapping) ya que si no mostraba el siguiente error:
+
+```bash
+2026/01/31 09:18:20 [emerg] 19#19: "modsecurity_rules_file" directive Rules error. File: /etc/modsecurity/modsecurity.conf. Line: 208. Column: 17. Failed to locate the unicode map file from: unicode.mapping Looking at: 'unicode.mapping', 'unicode.mapping', '/etc/modsecurity/unicode.mapping', '/etc/modsecurity/unicode.mapping'.  in /etc/nginx/conf.d/default.conf:38
+```
+
+
 > Nota: La mayoría de las configuraciones se han realizado en el archivo `default.conf` de Nginx.
 [Enlace al fichero `default.conf`](./default.conf)
 
