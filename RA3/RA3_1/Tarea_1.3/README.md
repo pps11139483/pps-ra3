@@ -104,7 +104,6 @@ Esta prueba verifica que no se puede intentar acceder a directorios padres.
 
 ```bash
 curl -k -I "https://localhost:8443/index.html?exec=/../../"
-
 ```
 
 **Output Esperado:**
@@ -121,7 +120,6 @@ El objetivo de esta prueba es demostrar que las reglas de la práctica anterior 
 
 ```bash
 curl -k -I "https://localhost:8443/post.php?input=<script>alert(1)</script>"
-
 ```
 
 **Output Esperado:**
