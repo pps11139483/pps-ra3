@@ -30,9 +30,6 @@ COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 RUN a2enmod security2
 RUN mkdir -p /etc/apache2/modsecurity
 COPY modsecurity.conf /etc/apache2/modsecurity/modsecurity.conf
-# Crear configuración mínima de ModSecurity si no existe
-RUN test -f /etc/apache2/mods-available/security2.conf || echo 'Include /etc/apache2/modsecurity/modsecurity.conf' > /etc/apache2/mods-available/security2.conf
-RUN a2enmod security2 2>/dev/null || true
 
 # Bloqueo de protocolo HTTP 1.0 (Obligar uso de HTTP 1.1)
 # Requiere mod_rewrite habilitado
