@@ -3,12 +3,8 @@ FROM pps11139483/pps-ra3:ra3_1-tarea-2
 
 # TAREA 3: HARDENING DE APACHE
 
-# Deshabilitar el listado de directorios y lectura de .htaccess 
-# Cambiamos 'AllowOverride All' a 'None' para que no se salten nuestra seguridad con .htaccess
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride.*/AllowOverride None/' /etc/apache2/apache2.conf && \
-    sed -i 's/Options Indexes FollowSymLinks/Options -Indexes -Includes/' /etc/apache2/apache2.conf
-
 # Protección contra ETag, Trace deshabilitado, Timeout reducido
+# 'AllowOverride All' cambiado a 'None' para que no se salten nuestra seguridad con .htaccess
 # y formato declogs 'common' modificado para incluir información de tiempo y cookie de sesión
 COPY apache2.conf /etc/apache2/apache2.conf
 
@@ -21,9 +17,7 @@ RUN a2enconf limit-methods
 # - X-Frame-Options: Evita Clickjacking
 # - X-XSS-Protection: Filtro contra XSS en el navegador
 # - Cookies: Añade flags Secure y HttpOnly (requiere mod_headers ya activo)
-RUN echo 'Header always append X-Frame-Options SAMEORIGIN' >> /etc/apache2/conf-available/security-headers.conf && \
-    echo 'Header set X-XSS-Protection "1; mode=block"' >> /etc/apache2/conf-available/security-headers.conf && \
-    echo 'Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure' >> /etc/apache2/conf-available/security-headers.conf
+COPY security-headers.conf /etc/apache2/conf-available/security-headers.conf
 
 # Sitio seguro con hardening de Ciphers SSL (Solo algoritmos fuertes) 
 COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
