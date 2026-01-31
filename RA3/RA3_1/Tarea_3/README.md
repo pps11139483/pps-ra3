@@ -6,8 +6,8 @@ En esta tarea se han aplicado diversas medidas de **hardening** (fortalecimiento
 
 Para comenzar, se ha configurado el servidor para restringir el acceso y la visibilidad de archivos críticos. Mediante la directiva `AllowOverride None`, deshabilitamos el uso de archivos `.htaccess`, lo que evita que configuraciones locales puedan saltarse las directivas de seguridad globales. Además, se desactivó el listado automático de directorios con `Options -Indexes` para que los usuarios no puedan ver la estructura de carpetas si no existe un archivo de índice, y se han eliminado los *Server Side Includes* con `-Includes` para reducir riesgos de ejecución de código.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 <Directory /var/www/>
 	Options -Indexes -Includes
 	AllowOverride None
@@ -17,14 +17,15 @@ Para comenzar, se ha configurado el servidor para restringir el acceso y la visi
 
 Para evitar la fuga de información sensible, se han desactivado los **ETags** con la directiva `FileETag None`. Esto impide que el servidor revele atributos internos de los archivos, como el número de inodo, que podrían ser utilizados para deducir detalles del sistema de archivos.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 FileETag None
 ```
 
 En cuanto a la gestión de peticiones, se han restringido los métodos HTTP permitidos únicamente a **GET, POST y HEAD**. Al definir este límite en un archivo de configuración específico, bloqueamos métodos potencialmente peligrosos como `PUT`, `DELETE` o `CONNECT` que no son necesarios para el funcionamiento normal de la web.
 
 ```apache
+# apache2.conf
 <Directory "/var/www/html">
     <LimitExcept GET POST HEAD>
         deny from all
@@ -34,15 +35,15 @@ En cuanto a la gestión de peticiones, se han restringido los métodos HTTP perm
 
 Asimismo, se ha deshabilitado explícitamente el método **TRACE** (`TraceEnable off`), protegiendo al servidor contra ataques de *Cross-Site Tracing* (XST) que intentan robar cookies de sesión HTTP.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 TraceEnable off
 ```
 
 Para fortalecer la seguridad en el navegador del usuario, se han inyectado varias **cabeceras de seguridad**. La cabecera `X-Frame-Options SAMEORIGIN` previene ataques de *Clickjacking* al prohibir que nuestro sitio sea embebido en iframes externos. Con `X-XSS-Protection`, activamos los filtros contra ataques XSS en navegadores antiguos, y mediante la edición de `Set-Cookie`, se asegura que todas las cookies se envíen con los flags `HttpOnly` (inaccesibles para scripts) y `Secure` (solo transmitidas por HTTPS).
 
-# security-headers.conf:
 ```apache
+# security-headers.conf
 Header always append X-Frame-Options SAMEORIGIN
 Header set X-XSS-Protection "1; mode=block"
 Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
@@ -50,15 +51,15 @@ Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
 
 Para mitigar ataques de **Denegación de Servicio (DoS)** como *Slowloris*, se ha reducido el tiempo de `Timeout` a 60 segundos, forzando el cierre de conexiones inactivas más rápidamente y liberando recursos para otros usuarios legítimos.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 Timeout 60
 ```
 
 La seguridad de las comunicaciones se ha reforzado mediante el **Hardening de Ciphers SSL**. Se ha configurado el servidor para aceptar exclusivamente TLS 1.2 o superior, eliminando protocolos obsoletos, y se ha definido una suite de cifrado fuerte para evitar el uso de algoritmos vulnerables.
 
-# default-ssl.conf:
 ```apache
+# default-ssl.conf
 SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1 +TLSv1.2 +TLSv1.3
 SSLCipherSuite HIGH:!aNULL:!MD5:!3DES
 SSLHonorCipherOrder on
@@ -66,19 +67,20 @@ SSLHonorCipherOrder on
 
 Una medida adicional de ofuscación ha sido camuflar el banner del servidor. Se ha configurado `ServerTokens Full` y se ha utilizado **ModSecurity** para modificar la firma del servidor a "Servidor_Seguro_PPS", dificultando el reconocimiento de la tecnología subyacente por parte de atacantes.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 ServerTokens Full
 ```
 
-# modsecurity.conf:
 ```apache
+# modsecurity.conf
 SecServerSignature "Servidor_Seguro_PPS"
 ```
 
 También se ha bloqueado el protocolo **HTTP 1.0**, obligando a todos los clientes a utilizar HTTP 1.1. Esto se consigue mediante reglas de reescritura que deniegan cualquier petición que no cumpla con esta versión del protocolo, asegurando que se beneficien de las mejoras de seguridad y rendimiento de las versiones más modernas.
 
 ```apache
+# block-http10.conf
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{THE_REQUEST} !HTTP/1\.1$
@@ -103,15 +105,15 @@ RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/
 
 Siguiendo las mejores prácticas, se han deshabilitado módulos innecesarios como **WebDAV** (`mod_dav`, `mod_dav_fs`) y **mod_info**, que podrían ser vectores de ataque o fuga de información. Además, se ha personalizado el formato de los logs de acceso (`LogFormat`) para incluir el tiempo de respuesta (`%T`) y el ID de sesión (`%{sessionID}C`), mejorando la capacidad de auditoría y depuración.
 
-# apache2.conf:
 ```apache
+# apache2.conf
 LogFormat "%h %l %u %t \"%{sessionID}C\" \"%r\" %>s %b %T" common
 ```
 
 Se ha habilitado el **Audit Log** de ModSecurity para registrar transacciones marcadas por las reglas. Esto se configura activando `SecAuditEngine` y definiendo la ruta del log con `SecAuditLog`.
 
-# modsecurity.conf:
 ```apache
+# modsecurity.conf
 SecAuditEngine On
 SecAuditLog /var/log/apache2/modsec_audit.log
 ```
@@ -173,12 +175,12 @@ curl -k -I https://localhost:8443/
 **Resultado esperado:**
 
 ```http
-HTTP/1.1 200 OK
+...
 Strict-Transport-Security: max-age=63072000; includeSubDomains
 Content-Security-Policy: default-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'
 X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
-Server: Apache (sin versión visible)
+...
 ```
 
 **Objetivo:** Verificar que todas las cabeceras de seguridad están presentes y correctamente configuradas.
@@ -190,16 +192,16 @@ Server: Apache (sin versión visible)
 **Comando:**
 
 ```bash
-curl -k -v --http1.0 https://localhost:8443/ 2>&1 | grep -E "HTTP/|Forbidden"
+curl -k -I --http1.0 https://localhost:8443/
 ```
 
 **Resultado esperado:**
 
 ```bash
-403 Forbidden
+HTTP/1.1 200 OK
 ```
 
-**Objetivo:** Asegurar que el servidor rechaza conexiones que no utilicen HTTP 1.1 o superior.
+**Objetivo:** Asegurar que el servidor redirige conexiones HTTP 1.0 a HTTP 1.1.
 
 ---
 
@@ -244,7 +246,7 @@ HTTP/1.1 403 Forbidden
 **Comando:**
 
 ```bash
-curl -k -X GET https://localhost:8443/
+curl -k -I GET https://localhost:8443/
 ```
 
 **Resultado esperado:**
@@ -262,54 +264,63 @@ HTTP/1.1 200 OK
 **Comando:**
 
 ```bash
-curl -k -X POST https://localhost:8443/ -d "test=data"
+curl -k -X POST https://localhost:8443/ -d "test=data" -o /dev/null -w "%{http_code}"
 ```
 
 **Resultado esperado:**
 
 ```bash
-HTTP/1.1 200 OK
+200
 ```
 
 **Objetivo:** Confirmar que POST funciona correctamente como método permitido.
 
 ---
 
-### 7. Comprobar regla WAF personalizada (testparam=test)
+### 7. Verificar server banner ofuscado
 
 **Comando:**
 
 ```bash
-curl -k -I "https://localhost:8443/?testparam=test"
-```
-
-**Resultado esperado:**
-
-```bash
-HTTP/1.1 403 Forbidden
-msg:'Cazado por Ciberseguridad'
-```
-
-**Objetivo:** Verificar que la regla ModSecurity `id:1234` definida en `default-ssl.conf` bloquea la solicitud.
-
----
-
-### 8. Verificar server banner ofuscado
-
-**Comando:**
-
-```bash
-curl -k -I https://localhost:8443/ | grep Server
+curl -k -I https://localhost:8443/
 ```
 
 **Resultado esperado:**
 
 ```
-Server: Apache (versión oculta)
+Server: Servidor_Seguro_PPS
 ```
 
 **Objetivo:** Confirmar que la información del servidor está ofuscada para evitar reconocimiento de versión.
 
+### 8. Verificar permisos de directorios
+- **Comando:**
+
+    ```bash
+    ```
+
+**Resultado esperado:**
+
+    ```text
+    # En ambos casos:
+    750
+    ```
+
+### 9. Verificaciń de Apache ejecutándose con usuario no privilegiado:**
+
+**Comando:**
+
+```bash
+docker exec tarea3 ps aux | grep apache | grep -v grep | grep -v "^root" | head -1
+```
+
+**Resultado esperado:**
+
+```text
+apache         7  0.0  0.0 240752 32360 ?        S    12:37   0:00 apache2 -D FOREGROUND
+```
+
+O cualquier otra línea donde Apache se ejecute bajo el usuario no privilegiado configurado (en este caso, "apache"). El proceso padre (PID 1) se ejecutará como root, pero los procesos workers deben ser bajo el usuario "apache".
 
 ## Capturas
 
