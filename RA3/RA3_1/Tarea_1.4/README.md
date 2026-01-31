@@ -107,7 +107,7 @@ dos-172.17.0.1
 
 ## Capturas
 
-> Ejecución de `ab`.
+> Ejecución de `ab`.<br>
 ![Prueba 1](capturas/prueba1.png)<br>
 [> **Descargar fichero con los logs completos de ejecución de ab**](./ab-logs.txt)
 
