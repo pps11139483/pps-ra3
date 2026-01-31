@@ -43,6 +43,10 @@ jobs:
           - context: ./RA3/RA3_1/Tarea_2
             image_tag: ra3_1-tarea-2
 
+          # Tarea 3
+          - context: ./RA3/RA3_1/Tarea_3
+            image_tag: ra3_1-tarea-3
+
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
