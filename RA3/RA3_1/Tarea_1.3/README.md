@@ -34,22 +34,19 @@ RUN mkdir -p /etc/modsecurity/crs/rules && \
 
 Luego, incluimos las reglas OWASP en la configuración de ModSecurity de Apache:
 
-```docker
-RUN sed -i '/IncludeOptional \/etc\/modsecurity\/\*\.conf/a \
-Include /etc/modsecurity/crs/crs-setup.conf\n\
-Include /etc/modsecurity/crs/rules/*.conf' \
-/etc/apache2/mods-enabled/security2.conf
+```yaml
+    IncludeOptional /etc/modsecurity/*.conf
+    Include /etc/modsecurity/crs/crs-setup.conf
+    Include /etc/modsecurity/crs/rules/*.conf
 ```
 
 Finalmente, añadimos una regla personalizada que bloquea peticiones donde el parámetro `testparam` contiene la palabra "test":
 
-```docker
-RUN sed -i "s|</VirtualHost>|    SecRule ARGS:testparam \"@contains test\" \"id:1234,phase:2,deny,status:403,msg:'Cazado por Ciberseguridad'\"\n</VirtualHost>|" \
-/etc/apache2/sites-available/default-ssl.conf
-
-RUN sed -i "s|</VirtualHost>|    SecRule ARGS:testparam \"@contains test\" \"id:1234,phase:2,deny,status:403,msg:'Cazado por Ciberseguridad'\"\n</VirtualHost>|" \
-/etc/apache2/sites-available/000-default.conf
+```yaml
+SecRule ARGS:testparam "@contains test" "id:1234,phase:2,deny,status:403,msg:'Cazado por Ciberseguridad'"
 ```
+
+Esta regla se aplica tanto al sitio seguro `default-ssl.conf` como al sitio http `000-default.conf`.
 
 ## Pull
 
