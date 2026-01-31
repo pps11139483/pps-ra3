@@ -18,6 +18,7 @@ RUN mv /usr/share/modsecurity-crs/crs-setup.conf.example /usr/share/modsecurity-
 
 # Activamos el modo bloqueo (SecRuleEngine On)
 COPY modsecurity.conf /etc/modsecurity/modsecurity.conf
+COPY unicode.mapping /etc/modsecurity/unicode.mapping
 
 # Archivo maestro de inclusión de reglas para Nginx
 COPY modsec_includes.conf /etc/nginx/modsec_includes.conf
