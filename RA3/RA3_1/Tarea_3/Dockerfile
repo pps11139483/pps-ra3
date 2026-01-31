@@ -44,13 +44,4 @@ RUN a2dismod -f autoindex dav dav_fs info
 # Restringimos acceso a binarios y carpetas de configuración (750)
 RUN chmod -R 750 /etc/apache2 /var/log/apache2 /usr/sbin/apache2
 
-# Ejecutar Apache con un usuario no privilegiado (Hardening)
-# Creamos el usuario y grupo 'apache' y configuramos Apache para usarlo
-RUN groupadd apache && useradd -g apache apache
-ENV APACHE_RUN_USER apache
-ENV APACHE_RUN_GROUP apache
-
-# Ajustamos la propiedad de directorios críticos para el nuevo usuario
-RUN chown -R apache:apache /var/www/html /var/log/apache2 /var/run/apache2 /var/lock/apache2
-
 # El comando de inicio sigue siendo el mismo que en la imagen base

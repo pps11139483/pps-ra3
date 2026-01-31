@@ -297,6 +297,8 @@ Server: Servidor_Seguro_PPS
 
 **Objetivo:** Confirmar que la información del servidor está ofuscada para evitar reconocimiento de versión.
 
+---
+
 ### 8. Verificar permisos de directorios
 - **Comando:**
 
@@ -311,6 +313,8 @@ docker exec tarea3 stat -c "%a" /var/log/apache2
 En ambos casos:
 750
 ```
+
+---
 
 ### 9. Verificaciń de Apache ejecutándose con usuario no privilegiado:**
 
